@@ -10,6 +10,13 @@ const saveUserData = (event) => {
   const password = document.getElementById("password").value;
   const checkBox = document.getElementById("tac").checked;
 
+  const age = calculateAge(dob);
+
+  if (age < 18 || age > 55) {
+    alert("You must be between 18 and 55 years old to register.");
+    return;
+  }
+
   if (!emailInput.checkValidity() || !passwordInput.checkValidity()) {
     return;
   }
@@ -29,13 +36,20 @@ const saveUserData = (event) => {
   displayEntries();
 };
 
+const calculateAge = (dob) => {
+  const birthDate = new Date(dob);
+  const ageDiff = Date.now() - birthDate.getTime();
+  const ageDate = new Date(ageDiff);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
 const retrieveUserData = () => {
   const entries = localStorage.getItem("user-entries");
   return entries ? JSON.parse(entries) : [];
 };
 
 const displayEntries = () => {
-  const entries = retrieveUserData(); // Correctly retrieve user data
+  const entries = retrieveUserData();
   const tableEntries = entries
     .map((entry) => {
       const nameCell = `<td>${entry.username}</td>`;
@@ -54,8 +68,8 @@ const displayEntries = () => {
         <th>Name</th>
         <th>Email</th>
         <th>Password</th>
-        <th>DOB</th>
-        <th>Accepted Terms</th>
+        <th>Dob</th>
+        <th>Accepted terms?</th>
       </tr>
       ${tableEntries}
     </table>`;
